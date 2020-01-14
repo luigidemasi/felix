@@ -22,10 +22,8 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -126,7 +124,8 @@ public class Scanner implements Closeable {
      */
     public Set<File> scan(boolean reportImmediately)
     {
-        File[] list = directory.listFiles(filter);
+
+        File[] list = directory.listFiles();
         Set<File> files = processFiles(reportImmediately, list);
         return new TreeSet<>(files);
     }
@@ -149,7 +148,12 @@ public class Scanner implements Closeable {
                 } 
                 else if (recurseSubdir)
                 {
-                    files.addAll(processFiles(reportImmediately, file.listFiles(filter)));
+                    files.addAll(processFiles(reportImmediately, file.listFiles()));
+                    continue;
+                }
+            }
+            else {
+                if (!filter.accept(file.getParentFile(),file.getName())){
                     continue;
                 }
             }
